@@ -31,14 +31,18 @@ void wdt_c_handler()
 void update_shape()
 {
   static unsigned char row = screenHeight / 2, col = screenWidth / 2; /* middle */
-  static int colStep = 5, rowStep = 5; /* added (Nov 10 Lecture) */
+  static int colStep = 1, rowStep = 1; /* added (Nov 10 Lecture) */
   
   static char blue = 31, green = 0, red = 31;
   static unsigned char step = 0; /* state variable */
-  if (switches & SW4) return;
-  if (step <= 10) { /* made object smaller from 60 to 10 (Nov 10 Lecture) */
-    int startCol = col - step;
-    int endCol = col + step;
+
+
+  if (switch1_state_down) {
+    int startCol = col - 5;
+    int endCol = col + 5;
+    int startRow = row - 10;
+    int endRow = row + 10;
+    int height = 1 + endRow - startRow;
     int width = 1 + endCol - startCol;
     // a color in this BGR encoding is BBBB BGGG GGGR RRRR
     unsigned int color = (blue << 11) | (green << 5) | red;
@@ -47,24 +51,40 @@ void update_shape()
     blue++; blue &= 31;
     green += 2; green &= 63;
     
-    fillRectangle(startCol, row+step, width, 1, color);
-    fillRectangle(startCol, row-step, width, 1, color);
-    if (switches & SW3) green = (green + 1) % 64;
-    if (switches & SW2) blue = (blue + 2) % 32;
-    if (switches & SW1) red = (red - 3) % 32;
-    step ++;
-  } else {
-    col+= colStep; row += rowStep; /* added to move center (Nov 10 Lecture) */
-    if (col < 20 || col > (screenWidth - 20)) {
-      col -= colStep; colStep = -colStep; /* walks to far to the right, reverse (Nov 10) */
-    }
-    if (row < 20 || row > (screenHeight - 20)) {
-      row -= rowStep; rowStep = -rowStep; /* walks to far down, reverse (Nov 10) */
-    }
+    fillRectangle(startCol, startRow, width, height, color);
+    
+  } else if (switch2_state_down) {
+    if (step <= 10) { /* made object smaller from 60 to 10 (Nov 10 Lecture) */
+      int startCol = col - step;
+      int endCol = col + step;
+      int width = 1 + endCol - startCol;
+      // a color in this BGR encoding is BBBB BGGG GGGR RRRR
+      unsigned int color = (blue << 11) | (green << 5) | red;
 
-    clearScreen(COLOR_BLUE);
-    step = 0;
+      /* added during Nov 10 Lecture */
+      blue++; blue &= 31;
+      green += 2; green &= 63;
+    
+      fillRectangle(startCol, row+step, width, 1, color);
+      fillRectangle(startCol, row-step, width, 1, color);
+      /* step++; */
+
+      col+= colStep; row += rowStep; /* added to move center (Nov 10 Lecture) */
+      if (col < 20 || col > (screenWidth - 20)) {
+	col -= colStep; colStep = -colStep; /* walks too far to the right, reverse (Nov 10) */
+      }
+      if (row < 20 || row > (screenHeight - 20)) {
+	row -= rowStep; rowStep = -rowStep; /* walks too far down, reverse (Nov 10) */
+      }
+    }
+  } else if (switch3_state_down) {
+    /* display message on screen */
+    
+    
+  } else if (switch4_state_down) {
+      clearScreen(COLOR_BLUE);
   }
+
 }
 
 void main(void) 

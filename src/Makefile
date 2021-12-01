@@ -10,13 +10,13 @@ AS              = msp430-elf-gcc -mmcu=${CPU} -c
 all: main.elf
 
 #additional rules for files
-main.elf: ${COMMON_OBJECTS} buzzer.o led.o switches.o stateMachines.o wdt_handler.o main.o ../lib/libTimer.a
+main.elf: ${COMMON_OBJECTS} buzzer.o led.o switches.o stateMachines.o led_25-c.o wdt_handler.o main.o ../lib/libTimer.a
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^ -lTimer -lLcd
 
 load: main.elf
 	msp430loader.sh  $^
 
-main-s.elf: ${COMMON_OBJECTS} buzzer.o led.o switches.o stateMachines.o wdt_handler.o main.o led-a.o ../lib/libTimer.a
+main-s.elf: ${COMMON_OBJECTS} buzzer.o led.o switches.o stateMachines.o led_25-s.o wdt_handler.o main.o led-a.o ../lib/libTimer.a
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^ -lTimer -lLcd
 
 load-s: main-s.elf
@@ -28,6 +28,8 @@ clean: $^
 
 buzzer.o: buzzer.h
 led.o: led.h
+led_25-c.o: led.h led_25-s.h
+led_25-s.o: led.h led_25-s.h
 switches.o: switches.h led.h
 stateMachines.o: stateMachines.h led.h
-main.o: buzzer.h led.h switches.h stateMachines.h
+main.o: buzzer.h led.h led_25-s.h switches.h stateMachines.h

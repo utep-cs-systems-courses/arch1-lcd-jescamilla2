@@ -1,25 +1,26 @@
 #include <msp430.h>
 #include "stateMachines.h"
 #include "led.h"
+#include "led_25-s.h"
 
 int blink_count = 0;
 int main_state = 0;
 int intensity_state = 1;
 int fast_state = 0;  
 
-void light_25(int state) {
-  switch(state) {
-  case 0:
-  case 1:
-  case 2:
-    P1OUT &= ~LED_GREEN; // turning off led green
-    break;
-  case 3:
-    P1OUT |= LED_GREEN; // turn on led green
-  default:
-    break;
-  }
-}
+/* void light_25(int state) { */
+/*   switch(state) { */
+/*   case 0: */
+/*   case 1: */
+/*   case 2: */
+/*     P1OUT &= ~LED_GREEN; // turning off led green */
+/*     break; */
+/*   case 3: */
+/*     P1OUT |= LED_GREEN; // turn on led green */
+/*   default: */
+/*     break; */
+/*   } */
+/* } */
 
 void light_50(int state) {
   switch(state) {
