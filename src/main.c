@@ -75,12 +75,12 @@ void update_shape()
       blue++; blue &= 31;
       green += 2; green &= 63;
 
-
       fillRectangle(col + 10 - step, startRow, 1, height, color);
       fillRectangle(col - 10 + step, startRow, 1, height, color);
       fillRectangle(startCol, row + 10 -step, width, 1, color);
       fillRectangle(startCol, row - 10 +step, width, 1, color);
       step++;
+
     } else {
       col+= colStep; row += rowStep; /* added to move center */
       if (col < 20 || col > (screenWidth - 20)) {
@@ -95,10 +95,10 @@ void update_shape()
   } else if (switch3_state_down) {
 
     row = screenHeight /2;
-    col = screenHeight /2;
+    col = screenWidth /2;
     
     /* display message on screen */
-    drawString5x7(0 , row - 50, "Hello, world!", COLOR_WHITE, COLOR_BLACK);
+    drawString5x7(col - 50, row, "Hello, world!", COLOR_WHITE, COLOR_BLACK);
     
   } else if (switch4_state_down) {
       clearScreen(COLOR_BLUE);
