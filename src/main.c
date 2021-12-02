@@ -27,59 +27,78 @@ void wdt_c_handler()
   }
 }
 
-
 void update_shape()
 {
   static unsigned char row = screenHeight / 2, col = screenWidth / 2; /* middle */
-  static int colStep = 1, rowStep = 1; /* added (Nov 10 Lecture) */
+  static int colStep = 5, rowStep = 5; /* added (Nov 10 Lecture) */
   
   static char blue = 31, green = 0, red = 31;
   static unsigned char step = 0; /* state variable */
 
+  int startCol;
+  int endCol;
+  int startRow;
+  int endRow;
+  int height = 1 + endRow - startRow;
+  int width = 1 + endCol - startCol;
 
+  // a color in this BGR encoding is BBBB BGGG GGGR RRRR
+  unsigned int color = (blue << 11) | (green << 5) | red;
+
+  
   if (switch1_state_down) {
-    int startCol = col - 5;
-    int endCol = col + 5;
-    int startRow = row - 10;
-    int endRow = row + 10;
-    int height = 1 + endRow - startRow;
-    int width = 1 + endCol - startCol;
-    // a color in this BGR encoding is BBBB BGGG GGGR RRRR
-    unsigned int color = (blue << 11) | (green << 5) | red;
 
-    /* added during Nov 10 Lecture */
-    blue++; blue &= 31;
-    green += 2; green &= 63;
+    for (int step = 0; step <= 50; step++) {
+      startCol = col - step;
+      endCol = col + step;
+      startRow = row - 10;
+      endRow = row + 10;
+      height = 1 + endRow - startRow;
+      width = 1 + endCol - startCol;
+
+      /* blue++; blue &= 31; */
+      /* green += 2; green &= 63; */
     
-    fillRectangle(startCol, startRow, width, height, color);
+      fillRectangle(startCol, row - 25 + step, width, 1, color);
+    }
     
   } else if (switch2_state_down) {
-    if (step <= 10) { /* made object smaller from 60 to 10 (Nov 10 Lecture) */
-      int startCol = col - step;
-      int endCol = col + step;
-      int width = 1 + endCol - startCol;
-      // a color in this BGR encoding is BBBB BGGG GGGR RRRR
-      unsigned int color = (blue << 11) | (green << 5) | red;
+    if (step <= 10) { 
 
-      /* added during Nov 10 Lecture */
+      startCol = col - step;
+      endCol = col + step;
+      startRow = row - step;
+      endRow = row + step;
+      width = 1 + endCol - startCol;
+      height = 1 + endRow - startRow;
+
       blue++; blue &= 31;
       green += 2; green &= 63;
-    
-      fillRectangle(startCol, row+step, width, 1, color);
-      fillRectangle(startCol, row-step, width, 1, color);
-      /* step++; */
 
-      col+= colStep; row += rowStep; /* added to move center (Nov 10 Lecture) */
+
+      fillRectangle(col + 10 - step, startRow, 1, height, color);
+      fillRectangle(col - 10 + step, startRow, 1, height, color);
+      fillRectangle(startCol, row + 10 -step, width, 1, color);
+      fillRectangle(startCol, row - 10 +step, width, 1, color);
+      step++;
+    } else {
+      col+= colStep; row += rowStep; /* added to move center */
       if (col < 20 || col > (screenWidth - 20)) {
-	col -= colStep; colStep = -colStep; /* walks too far to the right, reverse (Nov 10) */
+	col -= colStep; colStep = -colStep; /* walks too far to the right, reverse */
       }
       if (row < 20 || row > (screenHeight - 20)) {
-	row -= rowStep; rowStep = -rowStep; /* walks too far down, reverse (Nov 10) */
+	row -= rowStep; rowStep = -rowStep; /* walks too far down, reverse */
       }
+      clearScreen(COLOR_BLUE);
+      step = 0;
     }
   } else if (switch3_state_down) {
-    /* display message on screen */
+
+    row = screenHeight /2;
+    col = screenHeight /2;
     
+    /* display message on screen */
+    drawString5x7(0 , row - 50, "Hello, world!", COLOR_WHITE, COLOR_BLACK);
     
   } else if (switch4_state_down) {
       clearScreen(COLOR_BLUE);

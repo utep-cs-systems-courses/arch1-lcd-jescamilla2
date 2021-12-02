@@ -13,8 +13,8 @@ jt:
 	.extern P1OUT
 
 light_25:			; s (the selector) is in r12
-	cmp #4, r12		; r12 - 4 >= 0 then go to default
-	jhs default		; jmp if s > 3
+	cmp #5, r12		; r12 - 5 >= 0 then go to default
+	jhs default		; jmp if s > 4
 	add r12, r12		; 2*r12 (means 2*selector)
 	mov jt(r12), r0		; jmp jt[s]
 
